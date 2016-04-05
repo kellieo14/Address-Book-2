@@ -8,3 +8,7 @@
 .contact:hover {
   text-decoration: underline;
 }
+
+#addresses {
+  list-style: none;
+}

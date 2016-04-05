@@ -6,7 +6,8 @@ function Contact(first, last) {
   this.addresses = [];
 }
 
-function Address(street, city, state, zipCode) {
+function Address(addressType, street, city, state, zipCode) {
+  this.addressType = addressType;
   this.street = street;
   this.city = city;
   this.state = state;
@@ -18,13 +19,22 @@ Contact.prototype.fullName = function() {
 }
 
 Address.prototype.fullAddress = function() {
-  return this.street + ", " + this.city + ", " + this.state + " " + this.zipCode;
+  return this.street + ", " + this.city + ", " + this.state + " " + this.zipCode + "<br></br>";
 }
 
 //User interface logic
 $(document).ready(function() {
   $("#add-address").click(function() {
     $("#new-addresses").append('<div class="new-address">' +
+                                 '<br></br>' +
+                                 '<div class="form-group">' +
+                                   '<label for="selectAddress">Address Type</label>' +
+                                    '<select class="form-control" id="addressType">' +
+                                      '<option>Home</option>' +
+                                      '<option>Work</option>' +
+                                      '<option>Other</option>' +
+                                    '</select>' +
+                                 '</div>' +
                                  '<div class="form-group">' +
                                    '<label for="new-street">Street Name</label>' +
                                    '<input type="text" class="form-control" id="new-street">' +
@@ -47,18 +57,32 @@ $(document).ready(function() {
   $("form#new-contact").submit(function(event) {
     event.preventDefault();
 
+
     var inputtedFirstName = $("input#new-first-name").val();
     var inputtedLastName = $("input#new-last-name").val();
     var newContact = new Contact(inputtedFirstName, inputtedLastName);
 
-    $(".new-address").each(function() {
+    $(".primary-address").each(function() {
+      var inputtedAddressType = $(this).find("#addressType").val();
       var inputtedStreet = $(this).find("input#new-street").val();
       var inputtedCity = $(this).find("input#new-city").val();
       var inputtedState = $(this).find("input#new-state").val();
       var inputtedZipCode = $(this).find("input#new-zipCode").val();
-      var newAddress = new Address(inputtedStreet, inputtedCity, inputtedState, inputtedZipCode);
+      console.log(inputtedAddressType);
+      var newAddress = new Address(inputtedAddressType, inputtedStreet, inputtedCity, inputtedState, inputtedZipCode);
       newContact.addresses.push(newAddress);
+    });
 
+    $(".new-address").each(function() {
+      var inputtedAddressType = $(this).find("#addressType").val();
+      var inputtedStreet = $(this).find("input#new-street").val();
+      var inputtedCity = $(this).find("input#new-city").val();
+      var inputtedState = $(this).find("input#new-state").val();
+      var inputtedZipCode = $(this).find("input#new-zipCode").val();
+      console.log(inputtedAddressType);
+      var newAddress = new Address(inputtedAddressType, inputtedStreet, inputtedCity, inputtedState, inputtedZipCode);
+      newContact.addresses.push(newAddress);
+      $(".new-address").remove();
     });
 
     $("ul#contacts").append("<li><span class='contact'>" + newContact.fullName() + "</span></li>");
@@ -69,7 +93,7 @@ $(document).ready(function() {
       $(".last-name").text(newContact.lastName);
       $("ul#addresses").text("");
       newContact.addresses.forEach(function(address) {
-        $("ul#addresses").append("<li>" + address.fullAddress() + "</li>");
+        $("ul#addresses").append("<li>" + "<strong>" + address.addressType + "</strong>" + "</li>" + "<li>" + address.fullAddress() + "</li>");
       });
     });
 
